@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+KR|Open+Sans" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script>
+
+    function getData() {
+            console.log("getting cat data...");
+
+            // Get the data from endpoint.
+            $.ajax({
+                url:"/api/cats",
+                type:"get",
+                success: function(cats) {
+                    // On successful get, reload the datatable with new data.
+                    console.log("This is the data: " + cats);
+                    $('#table').DataTable().clear();
+                    $('#table').DataTable().rows.add(cats);
+                    $('#table').DataTable().columns.adjust().draw();
+                }
+            });
+        }
+
+    function postData() {
+            console.log("posting a new cat...");
+
+            //Get values from html
+            var name = $("#inputName").val();
+            var age = $("#inputAge").val();
+            var color = $("#inputColor").val();
+
+            // Create JS object with data.
+            var newCat = {
+                name : name,
+                age : age,
+                color : color
+            };
+            console.log(newCat);
+
+            // Convert JS object to JSON.
+            var validJsonCat = JSON.stringify(newCat);
+            console.log(validJsonCat);
+
+            // Post JSON to endpoint.
+            $.ajax({
+                url:"api/cats",
+                type:"post",
+                data: validJsonCat,
+                contentType: "application/json",
+                success: function(result) {
+                    // On successful post, reload data to get the added one as well.
+                    console.log("success post data!");
+                    getData();
+                }
+            });
+        }
+
+        function putData() {
+            console.log("changing...");
+
+            //Get values from html
+            var name = $("#inputChangeName").val();
+            var age = $("#inputChangeAge").val();
+            var color = $("#inputChangeColor").val();
+            var id = $("#inputChangeId").val();
+
+            // Create JS object with data.
+            var changeCat = {
+                name : name,
+                age : age,
+                color : color
+            };
+            console.log(changeCat);
+
+            // Convert JS object to JSON.
+            var validJsonCat = JSON.stringify(changeCat);
+            console.log(validJsonCat);
+
+            var src = "api/cats/" + id;
+
+            // Post JSON to endpoint.
+            $.ajax({
+                url: src,
+                type:"put",
+                data: validJsonCat,
+                contentType: "application/json",
+                success: function(result) {
+                    // On successful post, reload data to get the added one as well.
+                    console.log("success put data!");
+                    getData();
+                }
+            });
+        }
+
+            function deleteData() {
+            console.log("deleting...");
+
+            //Get values from html
+            var id = $("#inputDeleteId").val();
+
+            // Create JS object with data.
+            var deleteCat = {
+                id : id
+            };
+            console.log(deleteCat);
+
+            // Convert JS object to JSON.
+            var validJsonCat = JSON.stringify(deleteCat);
+            console.log(validJsonCat);
+            console.log("Delete cat" + id);
+
+
+            var src = "api/cats/" + id;
+
+            // Post JSON to endpoint.
+            $.ajax({
+                url: src,
+                type:"delete",
+                data: validJsonCat,
+                contentType: "application/json",
+                success: function(result) {
+                    // On successful post, reload data to get the added one as well.
+                    console.log("success delete data!");
+                    getData();
+                }
+            });
+        }
+
+        $(document).ready(function(){
+
+                $("#newCatForm").on('submit', function(e) {
+                console.log("Submitted new cat form");
+
+                // Post the data from the modal.
+                postData();
+
+                // Reset modal to no values.
+
+                $("#inputName").val("");
+                $("#inputAge").val("");
+                $("#inputColor").val("");
+            });
+
+            $("#changeCatForm").on('submit', function(e) {
+                console.log("Submitted changed cat form");
+
+                // Put the data from the modal.
+                putData();
+
+                // Reset modal to no values.
+
+                $("#inputChangeId").val("");
+                $("#inputChangeName").val("");
+                $("#inputChangeAge").val("");
+                $("#inputChangeColor").val("");
+            });
+
+                $("#deleteCatForm").on('submit', function(e) {
+                console.log("Submitted delete cat form");
+
+                // Delete the data.
+                deleteData();
+
+                // Reset modal to no values.
+
+                $("#inputChangeId").val("");
+            });
+
+                $('#table').DataTable({
+                columns: [
+                    { "data": "id" },
+                    { "data": "name" },
+                    { "data": "age" },
+                    { "data": "color" }
+                ]
+            });
+            // Load first data.
+            getData();
+            $("#btn5").click(function(){
+                $('#table tbody').empty();
+                console.log("hiding data..");
+                });
+            $("#btn6").click(function(){
+            getData();
+            });
+            });
+    </script>
+
+    <meta charset="UTF-8">
+    <title>Sophie's website</title>
+</head>
+<body>
+
+<div>
+    <table align="center" class="maintable">
+        <tbody>
+        <tr>
+            <td width="800px"
+                colspan="3">
+
+
+                <h1>Sophie Villerius</h1>
+            </td>
+        </tr>
+        <tr>
+            <td width="150px">
+                <a href="index.html">Home</a><br>
+                <a href="cats.html">Cats</a><br>
+                <a href="cats2.html">Cats2</a><br>
+            </td>
+            <td width="500px">
+                <h2>Cats</h2>
+
+                <p>Here you can find info about my cats</p>
+
+
+                <div id="cats"></div><br>
+                <br>
+<h2>Cats table</h2>
+                <table id="table">
+                    <thead>
+                    <tr>
+                        <td>Id</td>
+                        <td>Cat name</td>
+                        <td>Age</td>
+                        <td>Color</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+                <button id="btn5">Hide data</button>
+                <button id="btn6">Show data</button>
+
+                <br>
+                <br>
+
+                <h2>Make a new cat</h2>
+                <form data-toggle="validator" role="form" id="newCatForm" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="inputName" class="control-label">Name of cat</label>
+                        <input type="text" class="form-control" id="inputName" placeholder="Enter a name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputAge" class="control-label">Age of cat</label>
+                        <input type="text" class="form-control" id="inputAge" placeholder="Enter the age" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputColor" class="control-label">Color of cat</label>
+                        <input type="text" class="form-control" id="inputColor" placeholder="Enter the color" required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </form>
+
+
+
+                <h2>Change cat</h2>
+                <form data-toggle="validator" role="form" id="changeCatForm" onsubmit="return false;">
+
+                    <div class="form-group">
+                        <label for="inputChangeId" class="control-label">Id of cat</label>
+                        <input type="text" class="form-control" id="inputChangeId" placeholder="Enter the id" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputChangeName" class="control-label">Name of cat</label>
+                        <input type="text" class="form-control" id="inputChangeName" placeholder="Enter a name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputChangeAge" class="control-label">Age of cat</label>
+                        <input type="text" class="form-control" id="inputChangeAge" placeholder="Enter the age" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputChangeColor" class="control-label">Color of cat</label>
+                        <input type="text" class="form-control" id="inputChangeColor" placeholder="Enter the color" required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </form>
+
+                <h2>Delete cat</h2>
+                <form data-toggle="validator" role="form" id="deleteCatForm" onsubmit="return false;">
+
+                    <div class="form-group">
+                        <label for="inputDeleteId" class="control-label">Id of cat</label>
+                        <input type="text" class="form-control" id="inputDeleteId" placeholder="Enter the id" required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+
+                </form>
+
+
+
+            </td>
+            <td width="150px">
+                <img align="center" width="100%" src="/img/souris.jpg" />
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+KR|Open+Sans" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#btn1").click(function(){
+            alert("Text: " + $("#test").text());
+            });
+            $("#btn2").click(function(){
+                alert("HTML: " + $("#test").html());
+                });
+            $("#btn3").click(function(){
+                $.get("/api/cats", function(data, status){
+                        console.log("Data: " + data + "\nStatus: " + status);
+                        console.log(data);
+                    });
+                });
+            $("#btn4").click(function(){
+                $('#table tbody').empty();
+                $.getJSON("/api/cats", function(result){
+                    $.each(result, function(i, item) {
+                            var tr = $('<tr>').append(
+                                $('<td>').text(item.name),
+                                $('<td>').text(item.age),
+                                $('<td>').text(item.color),
+                                "<td><button id = modifyButton>MODIFY</button><button id = deleteButton>DELETE</button></td>");
+                                $("#table tbody").append(tr);
+                    });
+                });
+            });
+            $("#btn5").click(function(){
+                $('#table tbody').empty();
+                });
+            });
+    </script>
+
+    <meta charset="UTF-8">
+    <title>Sophie's website</title>
+</head>
+<body>
+
+<div>
+    <table align="center" class="maintable">
+        <tbody>
+        <tr>
+            <td width="800px"
+                colspan="3">
+
+
+                <h1>Sophie Villerius</h1>
+            </td>
+        </tr>
+        <tr>
+            <td width="150px">
+                <a href="index.html">Home</a><br>
+                <a href="cats.html">Cats</a><br>
+            </td>
+            <td width="500px">
+                <h2>Cats</h2>
+
+                <p>Here you can find info about my cats</p>
+
+                <button id="btn1">Show text</button>
+                <button id="btn2">Show html</button>
+                <p id="test">These are the <b>cats</b></p>
+
+                <button id="btn3">Show cats</button><br>
+                <button id="btn4">Show cats</button>
+                <button id="btn5">Remove cats</button><br>
+                <div id="cats"></div><br>
+                <br>
+
+                <table class="catstable" id="table">
+                    <thead>
+                    <tr>
+                        <td>Cat name</td>
+                        <td>Age</td>
+                        <td>Color</td>
+                        <td>Buttons</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+
+
+            </td>
+            <td width="150px">
+                <img align="center" width="100%" src="/img/portretvierkant.jpg" />
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
